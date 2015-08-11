@@ -1,0 +1,24 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require_relative 'vagrant-rancher-plugin/vagrant_rancheros_guest_plugin.rb'
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "rancherio/rancheros"
+
+  config.vm.network "public_network"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = "vagrant-ubuntu"
+    vb.cpus = 1  
+    vb.memory = "1024"
+  end
+  
+  # Disabling compression because OS X has an ancient version of rsync installed.
+  # Add -z or remove rsync__args below if you have a newer version of rsync on your machine.
+  config.vm.synced_folder ".", "/opt/rancher", type: "rsync",
+      rsync__exclude: ".git/", rsync__args: ["--verbose", "--archive", "--delete", "--copy-links"],
+      disabled: true
+  
+end
